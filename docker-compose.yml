@@ -7,7 +7,12 @@ services:
       FB_PAGE_ACCESS_TOKEN: "${FB_PAGE_ACCESS_TOKEN}"
     build: .
     image: test/book-wise:latest
-    command: ["node", "./index.js"]
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npm install
+        node ./index.js
     volumes:
       - .:/app
     ports:
