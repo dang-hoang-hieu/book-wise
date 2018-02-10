@@ -1,0 +1,14 @@
+version: '2'
+services:
+  bookwise:
+    container_name: book_wise
+    environment:
+      VERIFY_TOKEN: "${VERIFY_TOKEN}"
+      FB_PAGE_ACCESS_TOKEN: "${FB_PAGE_ACCESS_TOKEN}"
+    build: .
+    image: test/book-wise:latest
+    command: ["node", "./index.js"]
+    volumes:
+      - .:/app
+    ports:
+      - "1337:1337"
