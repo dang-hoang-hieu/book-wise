@@ -70,7 +70,9 @@ app.get('/webhook', (req, res) => {
 function getProfile(sender_psid) {
   callProfileAPI(sender_psid, (res, body) => {
     var content = JSON.parse(body);
-    console.log(content.first_name, content.last_name, content.profile_pic);
+    console.log(content.first_name, content.last_name, content.gender);
+    var msg = `Hi ${content.first_name} ${content.last_name} (${content.gender})`;
+    callSendAPI(sender_psid, {text: msg});
   });
 }
 
@@ -156,7 +158,7 @@ function callProfileAPI(sender_psid, callback) {
     "uri": `https://graph.facebook.com/v2.6/${sender_psid}`,
     "qs": {
       "access_token": process.env.FB_PAGE_ACCESS_TOKEN,
-      "fields": "first_name,last_name,profile_pic"
+      "fields": "first_name,last_name,gender"
     },
     "method": "GET",
   }, (err, res, body) => {
