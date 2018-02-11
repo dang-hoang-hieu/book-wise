@@ -29,6 +29,7 @@ app.post('/webhook', (req, res) => {
       if (webhook_event.sender) {
         let sender_psid = webhook_event.sender.id;
         console.log('Sender PSID: ' + sender_psid);
+        getProfile(sender_psid);
         if (webhook_event.message) {
           handleMessage(sender_psid, webhook_event.message);
         } else if (webhook_event.postback) {
@@ -65,6 +66,13 @@ app.get('/webhook', (req, res) => {
     }
   }
 });
+
+function getProfile(sender_psid) {
+  callProfileAPI(sender_psid, (res, body) => {
+    var content = JSON.parse(body);
+    console.log(content.first_name, content.last_name, content.profile_pic);
+  });
+}
 
 function handleMessage(sender_psid, received_message) {
   let response;
@@ -139,6 +147,24 @@ function callSendAPI(sender_psid, response) {
       console.log('message sent!')
     } else {
       console.error("Unable to send message:" + err);
+    }
+  });
+}
+
+function callProfileAPI(sender_psid, callback) {
+  request({
+    "uri": `https://graph.facebook.com/v2.6/${sender_psid}`,
+    "qs": {
+      "access_token": process.env.FB_PAGE_ACCESS_TOKEN,
+      "fields": "first_name,last_name,profile_pic"
+    },
+    "method": "GET",
+  }, (err, res, body) => {
+    if (!err) {
+      console.log('retrieved!');
+      callback(res, body);
+    } else {
+      console.error("Unable to retrieve:" + err);
     }
   });
 }
