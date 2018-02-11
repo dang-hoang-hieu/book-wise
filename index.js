@@ -5,7 +5,13 @@ const
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()),
   request = require('request'),
-  User = require('./models/user.js');
+  User = require('./models/user.js'),
+  mongoose = require('mongoose');
+
+mongoose.connect(`mongodb://${process.env.DB_HOST}/book_wise_dev`);
+var connection = mongoose.connection;
+connection.on('error', () => { console.log('connection error') });
+connection.once('open', () => { console.log('connection open!') });
 
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 

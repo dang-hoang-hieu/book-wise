@@ -5,6 +5,7 @@ services:
     environment:
       VERIFY_TOKEN: "${VERIFY_TOKEN}"
       FB_PAGE_ACCESS_TOKEN: "${FB_PAGE_ACCESS_TOKEN}"
+      DB_HOST: db
     build: .
     image: test/book-wise:latest
     command:
@@ -17,3 +18,14 @@ services:
       - .:/app
     ports:
       - "1337:1337"
+    depends_on:
+      - db
+  db:
+    container_name: mongodb
+    image: mongo
+    volumes:
+      - mongodb:/data
+    ports:
+      - "27017:27017"
+volumes:
+  mongodb:
